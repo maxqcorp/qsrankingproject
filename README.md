@@ -62,7 +62,15 @@ pip install -r analysis/requirements.txt
 
 ## Reproduce
 
-Run from the repository root, with the workbooks in `Dataset/`:
+**One command** (regenerate figures, refresh the figure bundle, and rebuild the
+manuscript and cover letters):
+
+```bash
+./build.sh              # full build (needs the venv and the workbooks in Dataset/)
+./build.sh --docx-only  # rebuild the documents only, e.g. after filling in author placeholders
+```
+
+Or run the steps manually, from the repository root, with the workbooks in `Dataset/`:
 
 ```bash
 python analysis/xai_faithfulness.py    # faithfulness benchmark (2024, 2025) + robustness sweep
