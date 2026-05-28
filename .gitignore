@@ -1,0 +1,18 @@
+# Proprietary source data: the QS World University Rankings workbooks are
+# copyright QS Quacquarelli Symonds and are NOT redistributed here.
+# Obtain them from QS and place them in Dataset/ (see README).
+Dataset/
+
+# Derived per-institution data tables (regenerate from the workbooks by
+# running the analysis scripts). Figures (*.png) are kept.
+analysis/output/*.csv
+analysis/output/*.txt
+
+# Python environment, caches, OS and editor cruft
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+~$*
+.claude/

@@ -1,0 +1,84 @@
+# When Explanations Mislead
+
+Reproducible code and manuscript for the study *"When Explanations Mislead: A
+Ground-Truth Test of Explainable Machine Learning for Auditing University-Ranking
+Reforms."*
+
+The study uses the 2024 QS World University Rankings reform as a fully observable
+natural experiment. Because the QS overall score is an exact linear function of
+its published indicators (reconstruction R-squared about 1.000), the true
+indicator weights are recoverable and the exact Shapley value of each indicator
+is available in closed form. Against this ground truth we show that the standard
+explainable-ML workflow (a random forest explained with TreeSHAP) systematically
+misattributes the drivers of ranking change, over-crediting the correlated
+Academic Reputation indicator and under-crediting the three indicators the reform
+introduced. We add an exact methodology-versus-performance decomposition, a
+no-reform placebo (2024 to 2025), an out-of-sample replication (2025), a
+robustness sweep over 20 seeds and two model families, and a counterfactual
+reweighting simulator.
+
+## Repository layout
+
+```
+analysis/
+  qs_common.py          data layer, weighting schemes, weight recovery, exact decompositions
+  xai_faithfulness.py   attribution methods, weight recovery, faithfulness, robustness sweep
+  xai_substantive.py    decomposition, incidence, simulator, Figures 1-9, graphical abstract
+  risers_fallers.py     descriptive 3-year risers/fallers
+  requirements.txt      pinned environment (Python 3.9)
+  output/               generated figures (committed); data tables regenerate locally
+paper/
+  manuscript_docx.md    manuscript source (Pandoc Markdown)
+  manuscript.docx       rendered manuscript
+  references.bib        bibliography
+  ieee.csl              citation style
+  cover_letter*.md      cover letters
+  figures/              submission-ready figures (Figure1..9.png) and the graphical abstract
+Dataset/                QS workbooks — NOT included (proprietary; see below)
+```
+
+## Data
+
+The analysis reads the official QS World University Rankings workbooks for the
+2023, 2024, and 2025 editions. **These files are copyright QS Quacquarelli Symonds
+and are not redistributed in this repository.** Obtain them from QS and place them
+in `Dataset/` with the original file names:
+
+```
+Dataset/2023 QS World University Rankings V2.1 (For qs.com).xlsx
+Dataset/2024 QS World University Rankings 1.2 (For qs.com).xlsx
+Dataset/2025 QS World University Rankings 2.2 (For qs.com)(1).xlsx
+```
+
+(File names are configured in `analysis/qs_common.py` under `FILES`.)
+
+## Setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r analysis/requirements.txt
+```
+
+## Reproduce
+
+Run from the repository root, with the workbooks in `Dataset/`:
+
+```bash
+python analysis/xai_faithfulness.py    # faithfulness benchmark (2024, 2025) + robustness sweep
+python analysis/xai_substantive.py     # decompositions, incidence, simulator, Figures 1-9, graphical abstract
+```
+
+Figures are written to `analysis/output/` and mirrored, with submission names, in
+`paper/figures/`. To rebuild the manuscript (requires Pandoc):
+
+```bash
+pandoc paper/manuscript_docx.md --citeproc \
+  --bibliography paper/references.bib --csl paper/ieee.csl \
+  -o paper/manuscript.docx
+```
+
+## License
+
+Code is released for review and reproduction. The QS rankings data is the property
+of QS Quacquarelli Symonds and is subject to their terms.
