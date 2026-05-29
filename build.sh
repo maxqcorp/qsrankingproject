@@ -52,6 +52,7 @@ cp "$OUT/paper_fig7_weights_by_year.png"    "$FIGDIR/Figure7.png"
 cp "$OUT/paper_fig8_faithfulness_2025.png"  "$FIGDIR/Figure8.png"
 cp "$OUT/paper_fig9_robustness.png"         "$FIGDIR/Figure9.png"
 cp "$OUT/graphical_abstract.png"            "$FIGDIR/GraphicalAbstract.png"
+cp "$OUT/graphical_abstract_a4.png"         "$FIGDIR/GraphicalAbstract_A4.png"
 
 if ! command -v pandoc >/dev/null 2>&1; then
   echo "ERROR: pandoc not found (needed to rebuild the .docx)." >&2
