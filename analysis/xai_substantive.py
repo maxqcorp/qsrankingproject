@@ -383,19 +383,21 @@ def graphical_abstract_a4():
              "Panel of 1,390 universities matched across the 2023, 2024 and 2025 editions.",
              ha="center", va="top", fontsize=9.5, color="#222222")
 
-    # --- Panel A: the key idea ---
-    axA = panel([0.07, 0.812, 0.86, 0.078], fc=BG)
-    axA.text(0.025, 0.86, "THE KEY IDEA", transform=axA.transAxes, fontsize=9.5,
+    # --- Panel A: the key idea (plain language) ---
+    axA = panel([0.07, 0.784, 0.86, 0.112], fc=BG)
+    axA.text(0.025, 0.89, "THE KEY IDEA", transform=axA.transAxes, fontsize=9.5,
              fontweight="bold", color=CORAL, va="top")
-    axA.text(0.025, 0.60, textwrap.fill(
-        "The QS overall score equals its indicator scores times their published weights, summed, almost "
-        "exactly (reconstruction R-squared about 1.000 in 2023, 2024 and 2025). Because the true recipe is "
-        "known, each indicator's exact contribution is available in closed form, so any explainer can be "
-        "graded against ground truth.", width=112),
-        transform=axA.transAxes, fontsize=8.8, va="top")
+    axA.text(0.025, 0.71, textwrap.fill(
+        "A university's QS score is simply its marks on a handful of measures, such as academic reputation, "
+        "employer views, and research citations, each multiplied by a fixed importance weight and added up, "
+        "much like a weighted exam grade. We found that this recipe reproduces the published score almost "
+        "perfectly in 2023, 2024 and 2025, so the correct answer for how much each measure counts is known "
+        "exactly. That rare certainty lets us test whether a popular AI explanation tool, given only the "
+        "data, can correctly say which measures drove a university's rise or fall, and it cannot.", width=116),
+        transform=axA.transAxes, fontsize=8.4, va="top")
 
     # --- Panel B: the core result (bar chart) ---
-    axB = fig.add_axes([0.11, 0.605, 0.82, 0.165])
+    axB = fig.add_axes([0.11, 0.600, 0.82, 0.150])
     labels = ["Academic\nReputation", "Sustainability", "Employment\nOutcomes", "Intl Research\nNetwork"]
     true_w = [0.30, 0.05, 0.05, 0.05]; shap_w = [0.65, 0.012, 0.016, 0.008]
     x = np.arange(len(labels)); bw = 0.38
@@ -414,10 +416,10 @@ def graphical_abstract_a4():
     axB.grid(axis="y", alpha=.3); axB.set_axisbelow(True)
 
     # --- Panel C: the 79% decomposition ---
-    fig.text(0.11, 0.575,
+    fig.text(0.11, 0.545,
              "About four-fifths of the 2024 reshuffle came from the rule change, not from real improvement.",
              ha="left", va="bottom", fontsize=9, color="#222222")
-    axC = fig.add_axes([0.11, 0.535, 0.82, 0.038])
+    axC = fig.add_axes([0.11, 0.503, 0.82, 0.036])
     axC.barh([0], [79], color=NAVY); axC.barh([0], [21], left=[79], color=TEAL)
     axC.set_xlim(0, 100); axC.set_ylim(-0.5, 0.5); axC.axis("off")
     axC.text(39.5, 0, "Methodology / new rules   79%", ha="center", va="center",
@@ -427,7 +429,7 @@ def graphical_abstract_a4():
     dw = 0.275; dpos = [0.07, 0.3625, 0.655]
 
     # --- Row 1: how we know it holds (validation pillars) ---
-    fig.text(0.07, 0.512, "How we know it holds", ha="left", va="bottom",
+    fig.text(0.07, 0.482, "How we know it holds", ha="left", va="bottom",
              fontsize=8.5, style="italic", color="#555555")
     dtitles = ["GROUND TRUTH", "PLACEBO + REPLICATION", "ROBUSTNESS"]
     dtexts = [
@@ -439,7 +441,7 @@ def graphical_abstract_a4():
         "random forest and gradient boosting.",
     ]
     for px, t, tx, c in zip(dpos, dtitles, dtexts, [TEAL, GOLD, CORAL]):
-        axd = panel([px, 0.375, dw, 0.130], fc="white", ec=c)
+        axd = panel([px, 0.356, dw, 0.120], fc="white", ec=c)
         axd.add_patch(plt.Rectangle((0, 0.83), 1, 0.17, transform=axd.transAxes, fc=c, ec=c))
         axd.text(0.5, 0.915, t, transform=axd.transAxes, ha="center", va="center",
                  fontsize=8.0, fontweight="bold", color="white")
@@ -447,7 +449,7 @@ def graphical_abstract_a4():
                  ha="left", va="top", fontsize=7.3)
 
     # --- Row 2: what this means, in plain terms (layman findings) ---
-    fig.text(0.07, 0.360, "What this means, in plain terms", ha="left", va="bottom",
+    fig.text(0.07, 0.340, "What this means, in plain terms", ha="left", va="bottom",
              fontsize=8.5, style="italic", color="#555555")
     etitles = ["RANKINGS CAN MISLEAD AI", "A JUMP CAN BE A MIRAGE", "REFORMS PICK WINNERS"]
     etexts = [
@@ -459,7 +461,7 @@ def graphical_abstract_a4():
         "Africa rose, while many in Asia slipped despite improving.",
     ]
     for px, t, tx in zip(dpos, etitles, etexts):
-        axe = panel([px, 0.215, dw, 0.130], fc="#eef3f3", ec=NAVY)
+        axe = panel([px, 0.214, dw, 0.120], fc="#eef3f3", ec=NAVY)
         axe.add_patch(plt.Rectangle((0, 0.83), 1, 0.17, transform=axe.transAxes, fc=NAVY, ec=NAVY))
         axe.text(0.5, 0.915, t, transform=axe.transAxes, ha="center", va="center",
                  fontsize=8.0, fontweight="bold", color="white")
@@ -467,14 +469,14 @@ def graphical_abstract_a4():
                  ha="left", va="top", fontsize=7.3)
 
     # --- Takeaway ---
-    axT = panel([0.07, 0.088, 0.86, 0.088], fc=NAVY, ec=NAVY)
+    axT = panel([0.07, 0.082, 0.86, 0.090], fc=NAVY, ec=NAVY)
     axT.text(0.5, 0.5, textwrap.fill(
         "TAKEAWAY:  a high-accuracy model paired with a popular explainer can be confidently wrong about "
         "what a reform rewarded when indicators are correlated. Prefer correctly specified models, and "
         "validate explanations against ground truth before trusting them in institutional analytics.",
         width=98), transform=axT.transAxes, ha="center", va="center", fontsize=8.6, color="white")
 
-    fig.text(0.5, 0.055,
+    fig.text(0.5, 0.052,
              "Data: QS World University Rankings, 2023 to 2025.    Reproducible code: github.com/maxqcorp/qsrankingproject",
              ha="center", va="center", fontsize=7.5, color="#666666")
 
