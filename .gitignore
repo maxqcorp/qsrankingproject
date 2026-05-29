@@ -16,3 +16,11 @@ __pycache__/
 .DS_Store
 ~$*
 .claude/
+
+# Manuscript and cover letters: kept local, not published (code-only repo)
+paper/manuscript_docx.md
+paper/manuscript.docx
+paper/cover_letter.md
+paper/cover_letter.docx
+paper/cover_letter_v2.md
+paper/cover_letter_v2.docx
