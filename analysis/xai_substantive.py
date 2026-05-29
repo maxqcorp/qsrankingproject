@@ -124,6 +124,7 @@ def main():
 
     _figures(dec, rd, have, rec)
     graphical_abstract()
+    graphical_abstract_a4()
     # save tables
     dec.to_csv(f"{OUT}/decomposition_scores.csv", index=False)
     rd.to_csv(f"{OUT}/decomposition_ranks.csv", index=False)
@@ -351,6 +352,110 @@ def graphical_abstract():
     ax.legend(loc="upper center", fontsize=9, bbox_to_anchor=(0.34, 1.0))
     fig.tight_layout()
     fig.savefig(f"{OUT}/graphical_abstract.png", bbox_inches="tight")
+    plt.close(fig)
+
+
+def graphical_abstract_a4():
+    """Full-page A4 (portrait) visual summary of the study, built from the
+    manuscript's abstract: the key idea, the core result, the 79% decomposition,
+    and the three validation pillars."""
+    import textwrap
+    BG = "#f4f1de"
+
+    fig = plt.figure(figsize=(8.27, 11.69))   # A4 portrait
+    fig.patch.set_facecolor("white")
+
+    def panel(rect, fc="white", ec="#cccccc"):
+        ax = fig.add_axes(rect); ax.axis("off")
+        ax.add_patch(plt.Rectangle((0, 0), 1, 1, transform=ax.transAxes, fc=fc, ec=ec, lw=1.0))
+        return ax
+
+    # --- title ---
+    fig.text(0.5, 0.978, "When Explanations Mislead", ha="center", va="top",
+             fontsize=21, fontweight="bold", color=NAVY)
+    fig.text(0.5, 0.949,
+             "A ground-truth test of explainable machine learning for auditing university-ranking reforms",
+             ha="center", va="top", fontsize=10.5, style="italic", color="#333333")
+    fig.add_artist(plt.Line2D([0.07, 0.93], [0.935, 0.935], color=CORAL, lw=2.2,
+                              transform=fig.transFigure))
+    fig.text(0.5, 0.921,
+             "The 2024 QS reform moved thousands of universities at once. Which factors truly drove each move?\n"
+             "Panel of 1,390 universities matched across the 2023, 2024 and 2025 editions.",
+             ha="center", va="top", fontsize=9.5, color="#222222")
+
+    # --- Panel A: the key idea ---
+    axA = panel([0.07, 0.812, 0.86, 0.078], fc=BG)
+    axA.text(0.025, 0.86, "THE KEY IDEA", transform=axA.transAxes, fontsize=9.5,
+             fontweight="bold", color=CORAL, va="top")
+    axA.text(0.025, 0.60, textwrap.fill(
+        "The QS overall score equals its indicator scores times their published weights, summed, almost "
+        "exactly (reconstruction R-squared about 1.000 in 2023, 2024 and 2025). Because the true recipe is "
+        "known, each indicator's exact contribution is available in closed form, so any explainer can be "
+        "graded against ground truth.", width=112),
+        transform=axA.transAxes, fontsize=8.8, va="top")
+
+    # --- Panel B: the core result (bar chart) ---
+    axB = fig.add_axes([0.11, 0.560, 0.82, 0.190])
+    labels = ["Academic\nReputation", "Sustainability", "Employment\nOutcomes", "Intl Research\nNetwork"]
+    true_w = [0.30, 0.05, 0.05, 0.05]; shap_w = [0.65, 0.012, 0.016, 0.008]
+    x = np.arange(len(labels)); bw = 0.38
+    axB.bar(x - bw / 2, true_w, bw, label="True weight (ground truth)", color=NAVY)
+    axB.bar(x + bw / 2, shap_w, bw, label="What TreeSHAP reports", color=CORAL)
+    axB.set_xticks(x); axB.set_xticklabels(labels, fontsize=8.3)
+    axB.set_ylim(0, 0.80); axB.set_ylabel("Weight in the QS score", fontsize=9)
+    axB.set_title("What a popular explainer reports vs the truth (2024 weights)",
+                  fontsize=11, fontweight="bold", color=NAVY, pad=8)
+    axB.legend(loc="upper center", bbox_to_anchor=(0.60, 0.99), fontsize=8.3)
+    axB.annotate("over-credited\nabout 2x", xy=(bw / 2, 0.66), xytext=(bw / 2, 0.72),
+                 ha="center", fontsize=8.3, color=CORAL, fontweight="bold")
+    axB.annotate("the 3 indicators the reform added:\nunder-credited 5 to 6 times",
+                 xy=(2 + bw / 2, 0.03), xytext=(2.05, 0.30), ha="center", fontsize=8.3,
+                 color=CORAL, arrowprops=dict(arrowstyle="->", color=CORAL, lw=1.1))
+    axB.grid(axis="y", alpha=.3); axB.set_axisbelow(True)
+
+    # --- Panel C: the 79% decomposition ---
+    fig.text(0.11, 0.512,
+             "About four-fifths of the 2024 reshuffle came from the rule change, not from real improvement.",
+             ha="left", va="bottom", fontsize=9, color="#222222")
+    axC = fig.add_axes([0.11, 0.460, 0.82, 0.045])
+    axC.barh([0], [79], color=NAVY); axC.barh([0], [21], left=[79], color=TEAL)
+    axC.set_xlim(0, 100); axC.set_ylim(-0.5, 0.5); axC.axis("off")
+    axC.text(39.5, 0, "Methodology / new rules   79%", ha="center", va="center",
+             color="white", fontsize=9, fontweight="bold")
+    axC.text(89.5, 0, "Performance   21%", ha="center", va="center", color="white", fontsize=8.5)
+
+    # --- Panel D: three validation pillars ---
+    dpos = [0.07, 0.3625, 0.655]; dw = 0.275
+    dtitles = ["GROUND TRUTH", "PLACEBO + REPLICATION", "ROBUSTNESS"]
+    dtexts = [
+        "Exact linear score, R-squared about 1.000 in all three editions. Exact Shapley and a correctly "
+        "specified linear model recover every weight perfectly.",
+        "The no-reform 2024 to 2025 transition shows about 0% methodology, versus 79%. The 2025 edition "
+        "reproduces the same over-attribution (Academic Reputation about 0.64).",
+        "The bias is essentially seed-invariant across 20 random seeds and appears in two model families: "
+        "random forest and gradient boosting.",
+    ]
+    for px, t, tx, c in zip(dpos, dtitles, dtexts, [TEAL, GOLD, CORAL]):
+        axd = panel([px, 0.205, dw, 0.150], fc="white", ec=c)
+        axd.add_patch(plt.Rectangle((0, 0.84), 1, 0.16, transform=axd.transAxes, fc=c, ec=c))
+        axd.text(0.5, 0.92, t, transform=axd.transAxes, ha="center", va="center",
+                 fontsize=8.3, fontweight="bold", color="white")
+        axd.text(0.07, 0.76, textwrap.fill(tx, width=33), transform=axd.transAxes,
+                 ha="left", va="top", fontsize=7.7)
+
+    # --- Takeaway ---
+    axT = panel([0.07, 0.088, 0.86, 0.088], fc=NAVY, ec=NAVY)
+    axT.text(0.5, 0.5, textwrap.fill(
+        "TAKEAWAY:  a high-accuracy model paired with a popular explainer can be confidently wrong about "
+        "what a reform rewarded when indicators are correlated. Prefer correctly specified models, and "
+        "validate explanations against ground truth before trusting them in institutional analytics.",
+        width=96), transform=axT.transAxes, ha="center", va="center", fontsize=9, color="white")
+
+    fig.text(0.5, 0.055,
+             "Data: QS World University Rankings, 2023 to 2025.    Reproducible code: github.com/maxqcorp/qsrankingproject",
+             ha="center", va="center", fontsize=7.5, color="#666666")
+
+    fig.savefig(f"{OUT}/graphical_abstract_a4.png", dpi=300, facecolor="white")
     plt.close(fig)
 
 
