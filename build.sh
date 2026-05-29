@@ -60,7 +60,7 @@ if ! command -v pandoc >/dev/null 2>&1; then
 fi
 echo "[3/4] Rebuilding paper/manuscript.docx"
 pandoc paper/manuscript_docx.md --citeproc \
-  --bibliography paper/references.bib --csl paper/ieee.csl \
+  --bibliography paper/references.bib --csl paper/mdpi.csl \
   -o paper/manuscript.docx
 
 echo "[4/4] Rebuilding cover letters"

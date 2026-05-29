@@ -87,7 +87,7 @@ Figures are written to `analysis/output/` and mirrored, with submission names, i
 
 ```bash
 pandoc paper/manuscript_docx.md --citeproc \
-  --bibliography paper/references.bib --csl paper/ieee.csl \
+  --bibliography paper/references.bib --csl paper/mdpi.csl \
   -o paper/manuscript.docx
 ```
 
