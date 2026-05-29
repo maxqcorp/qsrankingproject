@@ -395,7 +395,7 @@ def graphical_abstract_a4():
         transform=axA.transAxes, fontsize=8.8, va="top")
 
     # --- Panel B: the core result (bar chart) ---
-    axB = fig.add_axes([0.11, 0.560, 0.82, 0.190])
+    axB = fig.add_axes([0.11, 0.605, 0.82, 0.165])
     labels = ["Academic\nReputation", "Sustainability", "Employment\nOutcomes", "Intl Research\nNetwork"]
     true_w = [0.30, 0.05, 0.05, 0.05]; shap_w = [0.65, 0.012, 0.016, 0.008]
     x = np.arange(len(labels)); bw = 0.38
@@ -414,34 +414,57 @@ def graphical_abstract_a4():
     axB.grid(axis="y", alpha=.3); axB.set_axisbelow(True)
 
     # --- Panel C: the 79% decomposition ---
-    fig.text(0.11, 0.512,
+    fig.text(0.11, 0.575,
              "About four-fifths of the 2024 reshuffle came from the rule change, not from real improvement.",
              ha="left", va="bottom", fontsize=9, color="#222222")
-    axC = fig.add_axes([0.11, 0.460, 0.82, 0.045])
+    axC = fig.add_axes([0.11, 0.535, 0.82, 0.038])
     axC.barh([0], [79], color=NAVY); axC.barh([0], [21], left=[79], color=TEAL)
     axC.set_xlim(0, 100); axC.set_ylim(-0.5, 0.5); axC.axis("off")
     axC.text(39.5, 0, "Methodology / new rules   79%", ha="center", va="center",
-             color="white", fontsize=9, fontweight="bold")
-    axC.text(89.5, 0, "Performance   21%", ha="center", va="center", color="white", fontsize=8.5)
+             color="white", fontsize=8.8, fontweight="bold")
+    axC.text(89.5, 0, "Performance   21%", ha="center", va="center", color="white", fontsize=8.3)
 
-    # --- Panel D: three validation pillars ---
-    dpos = [0.07, 0.3625, 0.655]; dw = 0.275
+    dw = 0.275; dpos = [0.07, 0.3625, 0.655]
+
+    # --- Row 1: how we know it holds (validation pillars) ---
+    fig.text(0.07, 0.512, "How we know it holds", ha="left", va="bottom",
+             fontsize=8.5, style="italic", color="#555555")
     dtitles = ["GROUND TRUTH", "PLACEBO + REPLICATION", "ROBUSTNESS"]
     dtexts = [
-        "Exact linear score, R-squared about 1.000 in all three editions. Exact Shapley and a correctly "
-        "specified linear model recover every weight perfectly.",
-        "The no-reform 2024 to 2025 transition shows about 0% methodology, versus 79%. The 2025 edition "
-        "reproduces the same over-attribution (Academic Reputation about 0.64).",
-        "The bias is essentially seed-invariant across 20 random seeds and appears in two model families: "
+        "Exact linear score, R-squared about 1.000 in all three editions; exact and correctly specified "
+        "linear SHAP recover every weight perfectly.",
+        "The no-reform 2024 to 2025 transition shows about 0% methodology, versus 79%; the 2025 edition "
+        "reproduces the over-attribution.",
+        "The bias is essentially seed-invariant across 20 random seeds and appears in two model families, "
         "random forest and gradient boosting.",
     ]
     for px, t, tx, c in zip(dpos, dtitles, dtexts, [TEAL, GOLD, CORAL]):
-        axd = panel([px, 0.205, dw, 0.150], fc="white", ec=c)
-        axd.add_patch(plt.Rectangle((0, 0.84), 1, 0.16, transform=axd.transAxes, fc=c, ec=c))
-        axd.text(0.5, 0.92, t, transform=axd.transAxes, ha="center", va="center",
-                 fontsize=8.3, fontweight="bold", color="white")
-        axd.text(0.07, 0.76, textwrap.fill(tx, width=33), transform=axd.transAxes,
-                 ha="left", va="top", fontsize=7.7)
+        axd = panel([px, 0.375, dw, 0.130], fc="white", ec=c)
+        axd.add_patch(plt.Rectangle((0, 0.83), 1, 0.17, transform=axd.transAxes, fc=c, ec=c))
+        axd.text(0.5, 0.915, t, transform=axd.transAxes, ha="center", va="center",
+                 fontsize=8.0, fontweight="bold", color="white")
+        axd.text(0.07, 0.73, textwrap.fill(tx, width=34), transform=axd.transAxes,
+                 ha="left", va="top", fontsize=7.3)
+
+    # --- Row 2: what this means, in plain terms (layman findings) ---
+    fig.text(0.07, 0.360, "What this means, in plain terms", ha="left", va="bottom",
+             fontsize=8.5, style="italic", color="#555555")
+    etitles = ["RANKINGS CAN MISLEAD AI", "A JUMP CAN BE A MIRAGE", "REFORMS PICK WINNERS"]
+    etexts = [
+        "Asked what the 2024 reform rewarded, a standard AI explainer would point to the old reputation "
+        "score and miss the new sustainability, jobs, and research measures: the opposite of the truth.",
+        "About four in five places a university moved in 2024 came from the new rules, not from getting "
+        "better or worse, so a leap up the table can signal little that is real.",
+        "The rules helped some before anyone changed: research-heavy universities and those in Oceania and "
+        "Africa rose, while many in Asia slipped despite improving.",
+    ]
+    for px, t, tx in zip(dpos, etitles, etexts):
+        axe = panel([px, 0.215, dw, 0.130], fc="#eef3f3", ec=NAVY)
+        axe.add_patch(plt.Rectangle((0, 0.83), 1, 0.17, transform=axe.transAxes, fc=NAVY, ec=NAVY))
+        axe.text(0.5, 0.915, t, transform=axe.transAxes, ha="center", va="center",
+                 fontsize=8.0, fontweight="bold", color="white")
+        axe.text(0.07, 0.73, textwrap.fill(tx, width=34), transform=axe.transAxes,
+                 ha="left", va="top", fontsize=7.3)
 
     # --- Takeaway ---
     axT = panel([0.07, 0.088, 0.86, 0.088], fc=NAVY, ec=NAVY)
@@ -449,7 +472,7 @@ def graphical_abstract_a4():
         "TAKEAWAY:  a high-accuracy model paired with a popular explainer can be confidently wrong about "
         "what a reform rewarded when indicators are correlated. Prefer correctly specified models, and "
         "validate explanations against ground truth before trusting them in institutional analytics.",
-        width=96), transform=axT.transAxes, ha="center", va="center", fontsize=9, color="white")
+        width=98), transform=axT.transAxes, ha="center", va="center", fontsize=8.6, color="white")
 
     fig.text(0.5, 0.055,
              "Data: QS World University Rankings, 2023 to 2025.    Reproducible code: github.com/maxqcorp/qsrankingproject",
