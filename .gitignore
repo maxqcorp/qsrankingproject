@@ -24,3 +24,8 @@ paper/cover_letter.md
 paper/cover_letter.docx
 paper/cover_letter_v2.md
 paper/cover_letter_v2.docx
+
+# Any Word manuscript or template placed in paper/ (e.g. an MDPI submission) stays local
+paper/*.docx
+paper/*.dot
+paper/*.dotx
